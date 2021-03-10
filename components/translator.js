@@ -17,7 +17,7 @@ class Translator {
   }
   
   translateFunc(objBody){
-    let answer = {};
+    let answer = {text: objBody.text};
     if(objBody.locale == 'american-to-british'){
       answer.translation = this.americanToBritish(objBody.text)
     }else{
