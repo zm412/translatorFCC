@@ -20,11 +20,13 @@ class Translator {
     let answer = {};
     if(objBody.locale == 'american-to-british'){
       answer.translation = this.americanToBritish(objBody.text)
+    }else{
+      answer.translation = this.britishToAmerican(objBody.text)
     }
     console.log(answer)
-    //console.log(this.caseChecking('Mr.', this.dictTitle), 'caseChecking')
     return answer;
   }
+
 
 
   americanToBritish(str){
@@ -33,19 +35,23 @@ class Translator {
 
     for(let i = 0; i < sentenceArr.length; i++){
       
-      if(sentenceArr.length == 1){
+      let amerOnlyDict = this.checkAmericanTo(sentenceArr[i], this.americanOnly)
+      let spellDict =  this.checkAmericanTo(sentenceArr[i], this.dictSpell);
+      let titleDict = this.checkAmericanTo(sentenceArr[i], this.dictTitle);
+
+      if(sentenceArr.length == 1 && !amerOnlyDict && !spellDict && !titleDict ){
         let tempArr = sentenceArr[0].split('')  ;
         tempArr[0] = tempArr[0].toUpperCase();
         return tempArr.join('');
 
-      }else if(this.checkingCase(sentenceArr[i], this.dictSpell)){
-        newSentenceArr.push(this.checkingCase(sentenceArr[i], this.dictSpell));
-      }else if(this.checkingCase(sentenceArr[i], this.dictTitle)){
-        newSentenceArr.push(this.checkingCase(sentenceArr[i], this.dictTitle))
-      }else if(this.checkingCase(sentenceArr[i], this.americanOnly)){
-        newSentenceArr.push(this.checkingCase(sentenceArr[i], this.americanOnly))
+      }else if(sentenceArr.length == 1 && amerOnlyDict){
+        newSentenceArr.push(amerOnlyDict)
+      } else if(spellDict){
+        newSentenceArr.push(spellDict);
+      }else if(titleDict){
+        newSentenceArr.push(titleDict)
       }else{
-        newSentenceArr.push(this.checkingCase(sentenceArr[i]))
+        newSentenceArr.push(this.checkAmericanTo(sentenceArr[i]))
       }
 
     }
@@ -54,18 +60,47 @@ class Translator {
   }
 
 
-  checkingCase(str, obj){
-    //let arrSting = str.split('');
-    //let isCaseLow = arrString[0] == arrString[0].toLowerCase();
+
+  britishToAmerican(str){
+    let sentenceArr = str.split(' ')  ;
+    let newSentenceArr = [];
+
+    for(let i = 0; i < sentenceArr.length; i++){
+      let britOnlyDict = this.checkBritishTo(sentenceArr[i], this.britishOnly)
+      let spellDict =  this.checkBritishTo(sentenceArr[i], this.dictSpell);
+      let titleDict = this.checkBritishTo(sentenceArr[i], this.dictTitle);
+
+      if(sentenceArr.length == 1 && !britOnlyDict && !spellDict && !titleDict ){
+        let tempArr = sentenceArr[0].split('')  ;
+        tempArr[0] = tempArr[0].toUpperCase();
+        return tempArr.join('');
+
+      }else if(sentenceArr.length == 1 && britOnlyDict){
+        newSentenceArr.push(britOnlyDict)
+
+      } else if(this.checkBritishTo(spellDict)){
+        newSentenceArr.push(spellDict);
+
+      }else if(titleDict){
+        newSentenceArr.push(titleDict)
+
+      }else{
+        newSentenceArr.push(this.checkBritishTo(sentenceArr[i]))
+      }
+
+    }
+    console.log(newSentenceArr, 'sentence')
+    return newSentenceArr.join(' ');
+  }
+
+
+  checkAmericanTo(str, obj){
     let isCaseLow = str[0] == str[0].toLowerCase();
     let lowCaseStr = str.toLowerCase();
     let changedStr, arrStr;
     
 
     if(!obj){
-      //arrStr = str.split('');
-      //arrStr[0] = arrStr[0].toUpperCase();
-//      changedStr = arrStr.join('');
       changedStr = str;
     }else if(obj.hasOwnProperty(lowCaseStr) && isCaseLow){
       changedStr = obj[str];
@@ -77,6 +112,29 @@ class Translator {
 
     return changedStr;
     }
+
+
+  checkBritishTo(str, obj){
+    let isCaseLow = str[0] == str[0].toLowerCase();
+    let lowCaseStr = str.toLowerCase();
+    let changedStr, arrStr;
+    
+    if(!obj) changedStr = str;
+
+    for(let key in obj){
+
+      if(obj[key] == lowCaseStr && isCaseLow){
+        changedStr = key;
+      }else if(obj[key] == lowCaseStr && !isCaseLow){
+        arrStr = key.split('');
+        arrStr[0] = arrStr[0].toUpperCase();
+        changedStr = arrStr.join('')
+      }
+    }
+        return changedStr;
+  }
+
+
 
 }
 
