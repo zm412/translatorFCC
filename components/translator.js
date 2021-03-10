@@ -18,11 +18,26 @@ class Translator {
   
   translateFunc(objBody){
     let answer = {text: objBody.text};
+    let temp;
+
     if(objBody.locale == 'american-to-british'){
-      answer.translation = this.americanToBritish(objBody.text)
+      temp = this.americanToBritish(objBody.text)
     }else{
-      answer.translation = this.britishToAmerican(objBody.text)
+      temp = this.britishToAmerican(objBody.text)
     }
+
+  let tempArrTranslated = temp.split(' ');
+  let tempArrText = objBody.text.split(' ');
+
+  for(let i = 0; i < tempArrTranslated.length; i++){
+    if(tempArrTranslated[i] != tempArrText[i]){
+      tempArrTranslated[i] = '<span class="highlight">'+tempArrTranslated[i] + '</span>'
+    }
+  }
+  temp = tempArrTranslated.join(' ');
+  answer.translation = temp;
+
+
     console.log(answer)
     return answer;
   }

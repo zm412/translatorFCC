@@ -23,19 +23,6 @@ const translateHandler = async () => {
     errorArea.innerText = JSON.stringify(parsed);
     return;
   }
-
-  let tempArrTranslated = parsed.translation.split(' ');
-  let tempArrText = parsed.text.split(' ');
-  for(let i = 0; i < tempArrTranslated.length; i++){
-    if(tempArrTranslated[i] != tempArrText[i]){
-      tempArrTranslated[i] = '<span class="highlight">'+tempArrTranslated[i] + '</span>'
-      console.log(parsed.translation[i], 'i')
-    }
-  }
-  parsed.translation = tempArrTranslated.join(' ');
-
-  console.log(parsed.translation, 'parsed')
-
   translatedArea.innerHTML = parsed.translation;
   return;
 };
