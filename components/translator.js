@@ -15,28 +15,49 @@ class Translator {
   consoleFunc(objBody){
     console.log(objBody, 'obj')
   }
+
+  validationFunc(objBody){
+    let err;
+    if(!objBody.hasOwnProperty('text') || !objBody.hasOwnProperty('locale')){
+      err = 'Requird field(s) missing';
+    }else if(!objBody.text){
+      err = 'No text to translate';
+    }else if(objBody.locale != 'american-to-british' && objBody.locale != 'british-to-american'){
+      err = 'Invalid value for locale field';
+      console.log(objBody.locale, 'locale')
+    }
+    return err;
+  }
   
   translateFunc(objBody){
-    let answer = {text: objBody.text};
-    let temp;
 
-    if(objBody.locale == 'american-to-british'){
-      temp = this.americanToBritish(objBody.text)
+    let answer = {};
+    if(this.validationFunc(objBody)){
+      answer.error = this.validationFunc(objBody);
+      return answer; 
     }else{
-      temp = this.britishToAmerican(objBody.text)
+      let temp;
+      answer.text = objBody.text;
+
+      if(objBody.locale == 'american-to-british'){
+        temp = this.americanToBritish(objBody.text)
+      }else{
+        temp = this.britishToAmerican(objBody.text)
+      }
+
+      answer.originalTranslate = temp;
+      let tempArrTranslated = temp.split(' ');
+      let tempArrText = objBody.text.split(' ');
+
+      for(let i = 0; i < tempArrTranslated.length; i++){
+        if(tempArrTranslated[i] != tempArrText[i]){
+          tempArrTranslated[i] = '<span class="highlight">'+tempArrTranslated[i] + '</span>'
+        }
+      }
+      temp = tempArrTranslated.join(' ');
+      answer.translation = temp;
+
     }
-
-  let tempArrTranslated = temp.split(' ');
-  let tempArrText = objBody.text.split(' ');
-
-  for(let i = 0; i < tempArrTranslated.length; i++){
-    if(tempArrTranslated[i] != tempArrText[i]){
-      tempArrTranslated[i] = '<span class="highlight">'+tempArrTranslated[i] + '</span>'
-    }
-  }
-  temp = tempArrTranslated.join(' ');
-  answer.translation = temp;
-
 
     console.log(answer)
     return answer;
@@ -44,27 +65,39 @@ class Translator {
 
 
 
-  americanToBritish(str){
-    let sentenceArr = str.split(' ')  ;
-    let newSentenceArr = [];
 
+
+  americanToBritish(str){
+    let sentenceArr = str.split(' ');
+    let newSentenceArr = [];
+    
     for(let i = 0; i < sentenceArr.length; i++){
       
       let amerOnlyDict = this.checkAmericanTo(sentenceArr[i], this.americanOnly)
       let spellDict =  this.checkAmericanTo(sentenceArr[i], this.dictSpell);
       let titleDict = this.checkAmericanTo(sentenceArr[i], this.dictTitle);
 
+     
       if(sentenceArr.length == 1 && !amerOnlyDict && !spellDict && !titleDict ){
         let tempArr = sentenceArr[0].split('')  ;
         tempArr[0] = tempArr[0].toUpperCase();
         return tempArr.join('');
 
-      }else if(sentenceArr.length == 1 && amerOnlyDict){
+      } else if(sentenceArr[i] == '.' || sentenceArr[i] == ','){
+        newSentenceArr.push(sentenceArr[i])
+      }
+      else if(sentenceArr.length == 1 && amerOnlyDict){
         newSentenceArr.push(amerOnlyDict)
+
+      }else if(sentenceArr.length > 1 && amerOnlyDict){
+        newSentenceArr.push(amerOnlyDict)
+        
       } else if(spellDict){
         newSentenceArr.push(spellDict);
+
       }else if(titleDict){
         newSentenceArr.push(titleDict)
+
       }else{
         newSentenceArr.push(this.checkAmericanTo(sentenceArr[i]))
       }
@@ -93,6 +126,9 @@ class Translator {
       }else if(sentenceArr.length == 1 && britOnlyDict){
         newSentenceArr.push(britOnlyDict)
 
+      }else if(sentenceArr.length > 1 && britOnlyDict){
+        newSentenceArr.push(britOnlyDict)
+
       } else if(this.checkBritishTo(spellDict)){
         newSentenceArr.push(spellDict);
 
@@ -110,31 +146,56 @@ class Translator {
 
 
   checkAmericanTo(str, obj){
-    let isCaseLow = str[0] == str[0].toLowerCase();
-    let lowCaseStr = str.toLowerCase();
+    let isDote = /[.|,]$/.test(str);
+    let tempStr = str;
+    let word, dote;
+    
+    if(isDote){
+      word = tempStr.match(/^(.+)([,|.])$/)[1]; 
+      dote = tempStr.match(/^(.+)([,|.])$/)[2]; 
+      tempStr = word;
+    } 
+
+    let isCaseLow = tempStr[0] == tempStr[0].toLowerCase();
+    let lowCaseStr = tempStr.toLowerCase();
     let changedStr, arrStr;
     
-
     if(!obj){
-      changedStr = str;
+      changedStr = tempStr;
     }else if(obj.hasOwnProperty(lowCaseStr) && isCaseLow){
-      changedStr = obj[str];
+      changedStr = obj[tempStr];
     }else if(obj.hasOwnProperty(lowCaseStr) && !isCaseLow){
       arrStr = obj[lowCaseStr].split('');
       arrStr[0] = arrStr[0].toUpperCase();
       changedStr = arrStr.join('')
     }
 
+
+    if(isDote && changedStr){
+      changedStr = changedStr + dote;
+    } 
+
     return changedStr;
     }
 
 
   checkBritishTo(str, obj){
-    let isCaseLow = str[0] == str[0].toLowerCase();
-    let lowCaseStr = str.toLowerCase();
+    let isDote = /[.|,]$/.test(str);
+    let tempStr = str;
+    let word, dote;
+    
+    if(isDote){
+      word = tempStr.match(/^(.+)([,|.])$/)[1]; 
+      dote = tempStr.match(/^(.+)([,|.])$/)[2]; 
+      tempStr = word;
+    } 
+
+
+    let isCaseLow = tempStr[0] == tempStr[0].toLowerCase();
+    let lowCaseStr = tempStr.toLowerCase();
     let changedStr, arrStr;
     
-    if(!obj) changedStr = str;
+    if(!obj) changedStr = tempStr;
 
     for(let key in obj){
 
@@ -146,6 +207,12 @@ class Translator {
         changedStr = arrStr.join('')
       }
     }
+
+    if(isDote && changedStr){
+      changedStr = changedStr + dote;
+    } 
+
+
         return changedStr;
   }
 

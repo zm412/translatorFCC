@@ -23,6 +23,7 @@ const translateHandler = async () => {
     errorArea.innerText = JSON.stringify(parsed);
     return;
   }
+
   translatedArea.innerHTML = parsed.translation;
   return;
 };
