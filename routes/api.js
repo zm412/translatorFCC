@@ -8,7 +8,7 @@ module.exports = function (app) {
 
   app.route('/api/translate')
     .post((req, res) => {
-      //console.log(req)
+      //console.log()
       let obj = translator.translateFunc(req.body)
       console.log(obj, 'obj')
       res.json(obj)

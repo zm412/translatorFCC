@@ -12,9 +12,6 @@ class Translator {
     this.britishOnly = britishOnly;
   }
 
-  consoleFunc(objBody){
-    console.log(objBody, 'obj')
-  }
 
   validationFunc(objBody){
     let err;
@@ -40,9 +37,9 @@ class Translator {
       answer.text = objBody.text;
 
       if(objBody.locale == 'american-to-british'){
-        temp = this.americanToBritish(objBody.text)
+        temp = this.americanToBritish(objBody.text, this.americanOnly, this.checkAmericanTo)
       }else{
-        temp = this.britishToAmerican(objBody.text)
+        temp = this.americanToBritish(objBody.text, this.britishOnly, this.checkBritishTo)
       }
 
       answer.originalTranslate = temp;
@@ -70,7 +67,7 @@ class Translator {
 
 
 
-  americanToBritish(str){
+  americanToBritish(str, dictOnly, funcCheck){
     let sentenceArr = str.split(' ');
     let newSentenceArr = [];
     
@@ -78,21 +75,19 @@ class Translator {
       let coupleWords = sentenceArr[i] + ' ' + sentenceArr[i+1]
       let threeWords = sentenceArr[i] + ' ' + sentenceArr[i+1] + ' ' + sentenceArr[i+2];
       
-      let amerOnlyDict = this.checkAmericanTo(sentenceArr[i], this.americanOnly)
-      let spellDict =  this.checkAmericanTo(sentenceArr[i], this.dictSpell);
-      let titleDict = this.checkAmericanTo(sentenceArr[i], this.dictTitle);
-      let couple = this.checkAmericanTo(coupleWords, this.americanOnly)
-      let three = this.checkAmericanTo(threeWords, this.americanOnly)
+      let amerOnlyDict = funcCheck(sentenceArr[i], dictOnly)
+      let spellDict =  funcCheck(sentenceArr[i], this.dictSpell);
+      let titleDict = funcCheck(sentenceArr[i], this.dictTitle);
+      let couple = funcCheck(coupleWords, dictOnly);
+      let three = funcCheck(threeWords, dictOnly);
 
      
       if(sentenceArr.length == 1 && !amerOnlyDict && !spellDict && !titleDict ){
         let tempArr = sentenceArr[0].split('')  ;
         tempArr[0] = tempArr[0].toUpperCase();
         return tempArr.join('');
+       }
 
-      } else if(sentenceArr[i] == '.' || sentenceArr[i] == ','){
-        newSentenceArr.push(sentenceArr[i])
-      }
       else if(sentenceArr.length == 1 && amerOnlyDict){
         newSentenceArr.push(amerOnlyDict)
 
@@ -114,16 +109,16 @@ class Translator {
       }
  
       else{
-        newSentenceArr.push(this.checkAmericanTo(sentenceArr[i]))
+        newSentenceArr.push(funcCheck(sentenceArr[i]))
       }
 
     }
-    console.log(newSentenceArr, 'sentence')
     return newSentenceArr.join(' ');
   }
 
 
 
+  /*
   britishToAmerican(str){
     let sentenceArr = str.split(' ')  ;
     let newSentenceArr = [];
@@ -159,17 +154,17 @@ class Translator {
     return newSentenceArr.join(' ');
   }
 
-
+*/
   checkAmericanTo(str, obj){
-    let isDote = /[.|,|!|?|...]$/.test(str) && !this.dictTitle.hasOwnProperty(str.toLowerCase());
-    let isTime = /^[0|1][0-12]:[0-5][0-9]$/.test(str);
-    //console.log(this.dictTitle.hasOwnProperty(str.toLowerCase()), str)
-    let tempStr = str;
-    let word, dote;
     
-    if(isDote){
+    let isDot = /[.|,|!|?|...]$/.test(str) && !americanToBritishTitles.hasOwnProperty(str.toLowerCase());
+    let isTime = /^[0|1][0-12]:[0-5][0-9]$/.test(str);
+    let tempStr = str;
+    let word, dots;
+    
+    if(isDot){
       word = tempStr.match(/^(.+)([.|,|!|?|...])$/)[1]; 
-      dote = tempStr.match(/^(.+)([.|,|!|?|...])$/)[2]; 
+      dots = tempStr.match(/^(.+)([.|,|!|?|...])$/)[2]; 
       tempStr = word;
     } 
 
@@ -194,8 +189,8 @@ class Translator {
     }
 
 
-    if(isDote && changedStr){
-      changedStr = changedStr + dote;
+    if(isDot && changedStr){
+      changedStr = changedStr + dots;
     } 
 
     return changedStr;
@@ -203,16 +198,17 @@ class Translator {
 
 
   checkBritishTo(str, obj){
-    let isDote = /[.|,]$/.test(str);
-    let tempStr = str;
-    let word, dote;
     
-    if(isDote){
-      word = tempStr.match(/^(.+)([,|.])$/)[1]; 
-      dote = tempStr.match(/^(.+)([,|.])$/)[2]; 
+    let isDot = /[.|,|!|?|...]$/.test(str) && !americanToBritishTitles.hasOwnProperty(str.toLowerCase());
+    let isTime = /^[0|1][0-12]:[0-5][0-9]$/.test(str);
+    let tempStr = str;
+    let word, dots;
+    
+    if(isDot){
+      word = tempStr.match(/^(.+)([.|,|!|?|...])$/)[1]; 
+      dots = tempStr.match(/^(.+)([.|,|!|?|...])$/)[2]; 
       tempStr = word;
-    } 
-
+    }
 
     let isCaseLow = tempStr[0] == tempStr[0].toLowerCase();
     let lowCaseStr = tempStr.toLowerCase();
@@ -231,11 +227,9 @@ class Translator {
       }
     }
 
-    if(isDote && changedStr){
-      changedStr = changedStr + dote;
+    if(isDot && changedStr){
+      changedStr = changedStr + dots;
     } 
-
-
         return changedStr;
   }
 

@@ -140,11 +140,11 @@ suite('Unit Tests', () => {
     })
 
 
-    test('11. To British', (done) => {
+    test('1. to American', (done) => {
 
     let objBody = {
       text: 'We watched the footie match for a while.',
-      locale: 'american-to-british'
+      locale: 'british-to-american'
     }
       let answStr = 'Everything looks good to me!'; 
 
@@ -152,17 +152,172 @@ suite('Unit Tests', () => {
       done();
     })
 
-    test('12. To British', (done) => {
+    test('2. to American', (done) => {
 
     let objBody = {
       text: 'Paracetamol takes up to an hour to work.',
-      locale: 'american-to-british'
+      locale: 'british-to-american'
     }
       let answStr = 'Everything looks good to me!'; 
 
       assert.equal(translator.translateFunc(objBody).translation, answStr )
       done();
     })
+
+
+    test('3. to American', (done) => {
+
+    let objBody = {
+      text: 'First, caramelise the onions.',
+      locale: 'british-to-american'
+    }
+      let answStr = 'First, caramelize the onions.'; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+    test('4. to American', (done) => {
+
+    let objBody = {
+      text: 'I spent the bank holiday at the funfair.',
+      locale: 'british-to-american'
+    }
+      let answStr = 'I spent the public holiday at the carnival.'; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+   test('5. to American', (done) => {
+
+    let objBody = {
+      text: 'I had a bicky then went to the chippy.',
+      locale: 'british-to-american'
+    }
+      let answStr = 'I had a cookie then went to the fish-and-chip shop.'; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+   test('6. to American', (done) => {
+
+    let objBody = {
+      text: "I've just got bits and bobs in my bum bag.",
+      locale: 'british-to-american'
+    }
+      let answStr = "I've just got odds and ends in my fanny pack."; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+
+   test('7. to American', (done) => {
+
+    let objBody = {
+      text: "The car boot sale at Boxted Airfield was called off.",
+      locale: 'british-to-american'
+    }
+      let answStr = "The swap meet at Boxted Airfield was called off."; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+   test('8. to American', (done) => {
+
+    let objBody = {
+      text: "Have you met Mrs Kalyani?",
+      locale: 'british-to-american'
+    }
+      let answStr = "Have you met Mrs. Kalyani?"; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+   test('9. to American', (done) => {
+
+    let objBody = {
+      text: "Prof Joyner of King's College, London.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Prof. Joyner of King's College, London."; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+   test('10. to American', (done) => {
+
+    let objBody = {
+      text: "Tea time is usually around 4 or 4.30.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Tea time is usually around 4 or 4:30."; 
+
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
+      done();
+    })
+
+
+   test('11. to American', (done) => {
+
+    let objBody = {
+      text: "Mangoes are my favorite fruit.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Tea time is usually around 4 or 4:30."; 
+
+      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      done();
+    })
+
+
+   test('12. to American', (done) => {
+
+    let objBody = {
+      text: "I ate yogurt for breakfast.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Tea time is usually around 4 or 4:30."; 
+
+      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      done();
+    })
+
+
+   test('13. to American', (done) => {
+
+    let objBody = {
+      text: "We watched the footie match for a while.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Tea time is usually around 4 or 4:30."; 
+
+      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      done();
+    })
+
+   test('14. to American', (done) => {
+
+    let objBody = {
+      text: "Paracetamol takes up to an hour to work.",
+      locale: 'british-to-american'
+    }
+      let answStr = "Tea time is usually around 4 or 4:30."; 
+
+      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      done();
+    })
+
 
 
   })
