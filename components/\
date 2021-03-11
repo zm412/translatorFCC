@@ -58,9 +58,6 @@ class Translator {
       answer.translation = temp;
 
     }
-    if(answer.translation == objBody.text){
-      answer.translation = 'Everything looks good to me!'
-    }
 
     console.log(answer)
     return answer;
@@ -178,8 +175,11 @@ class Translator {
     let changedStr, arrStr;
 
     if(isTime){
-      let regTime = tempStr.match(/^([0|1][0-12]):([0-5][0-9])$/);
+      console.log(str, 'strTime')
+      let regTime = tempStr.match(/^([0|1][0-12]):([0-5][0-9])$/)[1];
       changedStr = String(regTime[1]) + '.' + regTime[2];
+      console.log(changedStr, 'chTime')
+      console.log(regTime)
     }
 
     
