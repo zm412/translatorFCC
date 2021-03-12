@@ -146,9 +146,9 @@ suite('Unit Tests', () => {
       text: 'We watched the footie match for a while.',
       locale: 'british-to-american'
     }
-      let answStr = 'Everything looks good to me!'; 
+      let answStr = 'We watched the soccer match for a while.'; 
 
-      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
       done();
     })
 
@@ -158,9 +158,9 @@ suite('Unit Tests', () => {
       text: 'Paracetamol takes up to an hour to work.',
       locale: 'british-to-american'
     }
-      let answStr = 'Everything looks good to me!'; 
+      let answStr = 'Tylenol takes up to an hour to work.'; 
 
-      assert.equal(translator.translateFunc(objBody).translation, answStr )
+      assert.equal(translator.translateFunc(objBody).originalTranslate, answStr )
       done();
     })
 
@@ -272,9 +272,9 @@ suite('Unit Tests', () => {
 
     let objBody = {
       text: "Mangoes are my favorite fruit.",
-      locale: 'british-to-american'
+      locale: 'american-to-british'
     }
-      let answStr = "Tea time is usually around 4 or 4:30."; 
+      let answStr = 'Mangoes are my <span class="highlight">favourite</span> fruit.'; 
 
       assert.equal(translator.translateFunc(objBody).translation, answStr )
       done();
@@ -285,9 +285,9 @@ suite('Unit Tests', () => {
 
     let objBody = {
       text: "I ate yogurt for breakfast.",
-      locale: 'british-to-american'
+      locale: 'american-to-british'
     }
-      let answStr = "Tea time is usually around 4 or 4:30."; 
+      let answStr = 'I ate <span class="highlight">yoghurt</span> for breakfast.'; 
 
       assert.equal(translator.translateFunc(objBody).translation, answStr )
       done();
@@ -300,7 +300,7 @@ suite('Unit Tests', () => {
       text: "We watched the footie match for a while.",
       locale: 'british-to-american'
     }
-      let answStr = "Tea time is usually around 4 or 4:30."; 
+      let answStr = 'We watched the <span class="highlight">soccer</span> match for a while.'; 
 
       assert.equal(translator.translateFunc(objBody).translation, answStr )
       done();
@@ -312,7 +312,7 @@ suite('Unit Tests', () => {
       text: "Paracetamol takes up to an hour to work.",
       locale: 'british-to-american'
     }
-      let answStr = "Tea time is usually around 4 or 4:30."; 
+      let answStr = '<span class="highlight">Tylenol</span> takes up to an hour to work.'; 
 
       assert.equal(translator.translateFunc(objBody).translation, answStr )
       done();

@@ -37,9 +37,9 @@ class Translator {
       answer.text = objBody.text;
 
       if(objBody.locale == 'american-to-british'){
-        temp = this.americanToBritish(objBody.text, this.americanOnly, this.checkAmericanTo)
+        temp = this.searchingForWords(objBody.text, this.americanOnly, this.checkAmericanTo);
       }else{
-        temp = this.americanToBritish(objBody.text, this.britishOnly, this.checkBritishTo)
+        temp = this.searchingForWords(objBody.text, this.britishOnly, this.checkBritishTo);
       }
 
       answer.originalTranslate = temp;
@@ -64,10 +64,7 @@ class Translator {
   }
 
 
-
-
-
-  americanToBritish(str, dictOnly, funcCheck){
+  searchingForWords(str, dictOnly, funcCheck){
     let sentenceArr = str.split(' ');
     let newSentenceArr = [];
     
@@ -81,34 +78,32 @@ class Translator {
       let couple = funcCheck(coupleWords, dictOnly);
       let three = funcCheck(threeWords, dictOnly);
 
-     
-      if(sentenceArr.length == 1 && !amerOnlyDict && !spellDict && !titleDict ){
+     if(three){
+        newSentenceArr.push(three);
+        i += 2;
+
+      }else if(couple){
+        newSentenceArr.push(couple);
+        i++;
+
+      }else if(sentenceArr.length == 1 && !amerOnlyDict && !spellDict && !titleDict ){
         let tempArr = sentenceArr[0].split('')  ;
         tempArr[0] = tempArr[0].toUpperCase();
         return tempArr.join('');
-       }
 
-      else if(sentenceArr.length == 1 && amerOnlyDict){
+      } else if(sentenceArr.length == 1 && amerOnlyDict){
         newSentenceArr.push(amerOnlyDict)
 
       }else if(sentenceArr.length > 1 && amerOnlyDict){
         newSentenceArr.push(amerOnlyDict)
         
-      } else if(spellDict){
+      }else if(spellDict){
         newSentenceArr.push(spellDict);
 
       }else if(titleDict){
         newSentenceArr.push(titleDict);
 
-      }else if(couple){
-        newSentenceArr.push(couple);
-        i++;
-      }else if(three){
-        newSentenceArr.push(three);
-        i += 2;
-      }
- 
-      else{
+      }else{
         newSentenceArr.push(funcCheck(sentenceArr[i]))
       }
 
@@ -117,44 +112,6 @@ class Translator {
   }
 
 
-
-  /*
-  britishToAmerican(str){
-    let sentenceArr = str.split(' ')  ;
-    let newSentenceArr = [];
-
-    for(let i = 0; i < sentenceArr.length; i++){
-      let britOnlyDict = this.checkBritishTo(sentenceArr[i], this.britishOnly)
-      let spellDict =  this.checkBritishTo(sentenceArr[i], this.dictSpell);
-      let titleDict = this.checkBritishTo(sentenceArr[i], this.dictTitle);
-
-      if(sentenceArr.length == 1 && !britOnlyDict && !spellDict && !titleDict ){
-        let tempArr = sentenceArr[0].split('')  ;
-        tempArr[0] = tempArr[0].toUpperCase();
-        return tempArr.join('');
-
-      }else if(sentenceArr.length == 1 && britOnlyDict){
-        newSentenceArr.push(britOnlyDict)
-
-      }else if(sentenceArr.length > 1 && britOnlyDict){
-        newSentenceArr.push(britOnlyDict)
-
-      } else if(this.checkBritishTo(spellDict)){
-        newSentenceArr.push(spellDict);
-
-      }else if(titleDict){
-        newSentenceArr.push(titleDict)
-
-      }else{
-        newSentenceArr.push(this.checkBritishTo(sentenceArr[i]))
-      }
-
-    }
-    console.log(newSentenceArr, 'sentence')
-    return newSentenceArr.join(' ');
-  }
-
-*/
   checkAmericanTo(str, obj){
     
     let isDot = /[.|,|!|?|...]$/.test(str) && !americanToBritishTitles.hasOwnProperty(str.toLowerCase());
@@ -180,8 +137,10 @@ class Translator {
     
     if(!obj){
       changedStr = tempStr;
+
     }else if(obj.hasOwnProperty(lowCaseStr) && isCaseLow){
       changedStr = obj[tempStr];
+
     }else if(obj.hasOwnProperty(lowCaseStr) && !isCaseLow){
       arrStr = obj[lowCaseStr].split('');
       arrStr[0] = arrStr[0].toUpperCase();
@@ -199,36 +158,64 @@ class Translator {
 
   checkBritishTo(str, obj){
     
-    let isDot = /[.|,|!|?|...]$/.test(str) && !americanToBritishTitles.hasOwnProperty(str.toLowerCase());
-    let isTime = /^[0|1][0-12]:[0-5][0-9]$/.test(str);
-    let tempStr = str;
+    let flagDot = true;
+    
+    for(let key in americanToBritishTitles){
+      if(americanToBritishTitles[key] == str.toLowerCase()){
+        flagDot = false;
+        break;
+      }
+    }
+
     let word, dots;
+    let tempStr = str;
+    let isDot = /[.|,|!|?|...]$/.test(str) && flagDot; 
     
     if(isDot){
       word = tempStr.match(/^(.+)([.|,|!|?|...])$/)[1]; 
       dots = tempStr.match(/^(.+)([.|,|!|?|...])$/)[2]; 
       tempStr = word;
-    }
+    } 
+
+    let isTime = /^[0|1]?[1-9].[0-5][0-9]$/.test(tempStr);
 
     let isCaseLow = tempStr[0] == tempStr[0].toLowerCase();
     let lowCaseStr = tempStr.toLowerCase();
     let changedStr, arrStr;
     
+    
+    if(isTime){
+      let regTime = tempStr.match(/^([0|1]?[1-9]).([0-5][0-9])$/);
+      changedStr = String(regTime[1]) + ':' + regTime[2];
+      console.log(isTime, 'isTime', changedStr, 'changStr')
+    }
+
     if(!obj) changedStr = tempStr;
 
     for(let key in obj){
 
-      if(obj[key] == lowCaseStr && isCaseLow){
+      if(obj[key] == lowCaseStr && isCaseLow && obj != britishOnly){
         changedStr = key;
-      }else if(obj[key] == lowCaseStr && !isCaseLow){
+
+      }else if(obj[key] == lowCaseStr && !isCaseLow && obj != britishOnly){
         arrStr = key.split('');
         arrStr[0] = arrStr[0].toUpperCase();
         changedStr = arrStr.join('')
+
+      }else if(obj == britishOnly && key == lowCaseStr && isCaseLow ){
+        changedStr = obj[key]
+
+      }else if(obj == britishOnly && key == lowCaseStr && !isCaseLow ){
+        arrStr = obj[key].split('');
+        arrStr[0] = arrStr[0].toUpperCase();
+        changedStr = arrStr.join('')
       }
+
     }
 
     if(isDot && changedStr){
       changedStr = changedStr + dots;
+      console.log(isDot, 'isDot', changedStr)
     } 
         return changedStr;
   }
