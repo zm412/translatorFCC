@@ -11,7 +11,8 @@ module.exports = function (app) {
       //console.log()
       let obj = translator.translateFunc(req.body)
       console.log(obj, 'obj')
-      res.json(obj)
+      res.json({text: obj.text, translation: obj.translation, error: obj.error})
+
       
     });
 };

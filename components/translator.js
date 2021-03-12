@@ -16,7 +16,7 @@ class Translator {
   validationFunc(objBody){
     let err;
     if(!objBody.hasOwnProperty('text') || !objBody.hasOwnProperty('locale')){
-      err = 'Requird field(s) missing';
+      err = 'Required field(s) missing';
     }else if(!objBody.text){
       err = 'No text to translate';
     }else if(objBody.locale != 'american-to-british' && objBody.locale != 'british-to-american'){
